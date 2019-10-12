@@ -17,6 +17,9 @@ public class GridManager : MonoBehaviour
     [SerializeField] private GameObject wallPrefab;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject enemyPrefab;
+    [SerializeField] private GameObject portalPrefab;
+    [SerializeField] private GameObject ogrePrefab;
+    [SerializeField] private GameObject firePrefab;
     [SerializeField] private CardsManager cardManager;
 
     [TableMatrix] public Entity[,] matrix;
@@ -158,12 +161,15 @@ public class GridManager : MonoBehaviour
             return;
         switch (entityFrom.type)
         {
+            case RoomConfiguration.TileType.Portal:
             case RoomConfiguration.TileType.Wall:
             case RoomConfiguration.TileType.Empty:
+            case RoomConfiguration.TileType.Fire:
                 appMatrix[i, j] = entityFrom;
                 break;
             case RoomConfiguration.TileType.Enemy:
             case RoomConfiguration.TileType.Player:
+            case RoomConfiguration.TileType.Ogre:
                 var row = i + direction.x;
                 var col = j - direction.y;
 
@@ -173,18 +179,43 @@ public class GridManager : MonoBehaviour
                 Entity entityTo = appMatrix[row, col];
                 if (entityTo != null)
                 {
-                    if (entityTo.type == RoomConfiguration.TileType.Enemy && entityFrom.type == RoomConfiguration.TileType.Player
-                        ||
-                        entityTo.type == RoomConfiguration.TileType.Player && entityFrom.type == RoomConfiguration.TileType.Enemy)
+                    switch (entityFrom.type)
                     {
-                        //TODO: DEAD;
-                        Debug.Log("DEAD");
+                        case RoomConfiguration.TileType.Ogre:
+                            if (entityTo.type == RoomConfiguration.TileType.Fire)
+                            {
+                                //DAMAGE
+                            }
+
+                            break;
+
+                        case RoomConfiguration.TileType.Enemy:
+                            if (entityTo.type == RoomConfiguration.TileType.Player)
+                            {
+                                //DEAD
+                            }
+
+                            break;
+                        case RoomConfiguration.TileType.Player:
+                            switch (entityTo.type)
+                            {
+                                case RoomConfiguration.TileType.Ogre:
+                                case RoomConfiguration.TileType.Enemy:
+                                case RoomConfiguration.TileType.Fire:
+                                    //DEAD
+                                    break;
+                                case RoomConfiguration.TileType.Portal:
+                                    //WIN
+                                    break;
+                            }
+
+                            break;
                     }
 
                     row = i;
                     col = j;
                 }
-                
+
                 appMatrix[row, col] = entityFrom;
 
                 if (row == i && col == j)

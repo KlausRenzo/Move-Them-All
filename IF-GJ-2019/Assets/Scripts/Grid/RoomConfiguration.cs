@@ -19,7 +19,10 @@ public class RoomConfiguration : SerializedScriptableObject
         Empty,
         Enemy,
         Wall,
-        Player
+        Player,
+        Portal,
+        Ogre,
+        Fire
     }
 }
 

@@ -18,3 +18,7 @@ public class GridWall : GridEntity
 [CreateAssetMenu(menuName = "Internet Festival/Grid Entities/Player")]
 public class GridPlayer : GridEntity
 { }
+
+[CreateAssetMenu(menuName = "Internet Festival/Grid Entities/Portal")]
+public class GridPortal : GridEntity
+{ }
