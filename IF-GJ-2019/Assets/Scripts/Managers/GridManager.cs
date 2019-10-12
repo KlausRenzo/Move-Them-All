@@ -65,6 +65,15 @@ public class GridManager : MonoBehaviour
                     case RoomConfiguration.TileType.Player:
                         g = Instantiate(playerPrefab);
                         break;
+                    case RoomConfiguration.TileType.Portal:
+                        g = Instantiate(portalPrefab);
+                        break;
+                    case RoomConfiguration.TileType.Ogre:
+                        g = Instantiate(ogrePrefab);
+                        break;
+                    case RoomConfiguration.TileType.Fire:
+                        g = Instantiate(firePrefab);
+                        break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
@@ -131,17 +140,17 @@ public class GridManager : MonoBehaviour
                 }
             }
         else if (direction == Vector2Int.left)
-            for (var i = 0; i < x; i++)
+            for (var j = 0; j < y; j++)
             {
-                for (var j = y - 1; j >= 0; j--)
+                for (var i = 0; i < x; i++)
                 {
                     Step(i, j, direction);
                 }
             }
         else if (direction == Vector2Int.right)
-            for (var i = 0; i < x; i++)
+            for (var j = 0; j < y; j++)
             {
-                for (var j = 0; j < y; j++)
+                for (var i = x - 1; i >= 0; i--)
                 {
                     Step(i, j, direction);
                 }
@@ -220,8 +229,9 @@ public class GridManager : MonoBehaviour
 
                 if (row == i && col == j)
                     return;
+
                 // todo do movement on entity to manage animations
-                entityFrom.transform.position = grid.GetCellCenterWorld(new Vector3Int(row - x / 2, (col - y / 2) * -1, 0));
+                entityFrom.MoveTo(grid.GetCellCenterWorld(new Vector3Int(row - x / 2, (col - y / 2) * -1, 0)), direction);
 
                 break;
             default:
