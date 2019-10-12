@@ -10,49 +10,80 @@ using UnityEngine;
 
 public class GridManager : MonoBehaviour
 {
-    [SerializeField] private List<RoomConfiguration> rooms = new List<RoomConfiguration>();
-
     private Grid grid;
-
-    [SerializeField] private GameObject wallPrefab;
+    [Space(10)] [SerializeField] private GameObject wallPrefab;
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject portalPrefab;
     [SerializeField] private GameObject ogrePrefab;
     [SerializeField] private GameObject firePrefab;
-    [SerializeField] private CardsManager cardManager;
+
+    [Space(10)] [SerializeField] private GameObject cellLitPrefab;
+    [SerializeField] private GameObject cellUnlitPrefab;
+
+    [Space(10)] [SerializeField] private CardsManager cardManager;
 
     [TableMatrix] public Entity[,] matrix;
 
-    [Button(Name = "Get Rooms")]
-    private void GetAllRooms()
+    public event Action roomFailed;
+    public event Action roomCompleted;
+
+    private GameObject root;
+    private Vector2Int winCoordinates;
+
+    [Button]
+    private void Win()
     {
-        rooms = Utilities.GetAllInstances<RoomConfiguration>().ToList();
+        roomCompleted?.Invoke();
+    }
+
+    [Button]
+    private void Lose()
+    {
+        roomFailed?.Invoke();
     }
 
     private void Start()
     {
         grid = GetComponent<Grid>();
-        SetUpRoom();
-        cardManager.Initialize(rooms[0].cards);
+        root = new GameObject();
     }
 
-    private void SetUpRoom()
+    public void Initialize(RoomConfiguration room)
     {
-        var roomConfiguration = rooms[0];
-        var x = roomConfiguration.entities.GetLength(0);
-        var y = roomConfiguration.entities.GetLength(1);
-        matrix = new Entity[x, y];
-        if (x % 2 != 0) transform.position = new Vector3(-0.5f, transform.position.y, 0);
+        DestroyAll();
+        SetUpRoom(room);
+        cardManager.Initialize(room.cards);
+    }
 
-        if (y % 2 != 0) transform.position = new Vector3(transform.position.x, -0.5f, 0);
+    private void DestroyAll()
+    {
+        Destroy(root);
+        root = new GameObject();
+    }
+
+    private float multiplier;
+
+    private void SetUpRoom(RoomConfiguration room)
+    {
+        var x = room.entities.Length;
+        var y = room.entities[0].Length;
+
+        multiplier = 5f / x;
+        grid.cellSize = Vector3.one * multiplier;
+
+        matrix = new Entity[x, y];
+        if (x % 2 != 0) transform.position = new Vector3(-0.5f * multiplier, transform.position.y, 0);
+
+        if (y % 2 != 0) transform.position = new Vector3(transform.position.x, -0.5f * multiplier, 0);
 
         for (var i = 0; i < x; i++)
         {
             for (var j = 0; j < y; j++)
             {
+                DrawCell(i, j, x, y);
                 GameObject g = null;
-                switch (roomConfiguration.entities[i, j])
+                switch (room.entities[i][j])
                 {
                     case RoomConfiguration.TileType.Empty:
                         continue;
@@ -66,6 +97,7 @@ public class GridManager : MonoBehaviour
                         g = Instantiate(playerPrefab);
                         break;
                     case RoomConfiguration.TileType.Portal:
+                        winCoordinates = new Vector2Int(i, j);
                         g = Instantiate(portalPrefab);
                         break;
                     case RoomConfiguration.TileType.Ogre:
@@ -80,10 +112,33 @@ public class GridManager : MonoBehaviour
 
                 var location = grid.GetCellCenterWorld(new Vector3Int(i - x / 2, (j - y / 2) * -1, 0));
                 g.transform.position = location;
-                g.transform.SetParent(transform);
+                g.transform.localScale *= multiplier;
+                g.transform.SetParent(root.transform);
+                if (room.entities[i][j] == RoomConfiguration.TileType.Portal)
+                {
+                    continue;
+                }
+
                 matrix[i, j] = g.GetComponent<Entity>();
             }
         }
+    }
+
+    private void DrawCell(int i, int j, int x, int y)
+    {
+        GameObject cell = null;
+        if ((i + j) % 2 == 0)
+        {
+            cell = Instantiate(cellLitPrefab);
+        }
+        else
+        {
+            cell = Instantiate(cellUnlitPrefab);
+        }
+
+        cell.transform.position = grid.GetCellCenterWorld(new Vector3Int(i - x / 2, (j - y / 2) * -1, 0)) - new Vector3(0, 0, 10);
+        cell.transform.localScale *= multiplier;
+        cell.transform.SetParent(root.transform);
     }
 
     // Update is called once per frame
@@ -132,9 +187,9 @@ public class GridManager : MonoBehaviour
                 }
             }
         else if (direction == Vector2Int.down)
-            for (var i = x - 1; i >= 0; i--)
+            for (var i = 0; i < x; i++)
             {
-                for (var j = 0; j < y; j++)
+                for (var j = y - 1; j >= 0; j--)
                 {
                     Step(i, j, direction);
                 }
@@ -201,7 +256,7 @@ public class GridManager : MonoBehaviour
                         case RoomConfiguration.TileType.Enemy:
                             if (entityTo.type == RoomConfiguration.TileType.Player)
                             {
-                                //DEAD
+                                roomFailed?.Invoke();
                             }
 
                             break;
@@ -211,18 +266,21 @@ public class GridManager : MonoBehaviour
                                 case RoomConfiguration.TileType.Ogre:
                                 case RoomConfiguration.TileType.Enemy:
                                 case RoomConfiguration.TileType.Fire:
-                                    //DEAD
-                                    break;
-                                case RoomConfiguration.TileType.Portal:
-                                    //WIN
+                                    roomFailed?.Invoke();
                                     break;
                             }
 
+
                             break;
                     }
+                }
 
-                    row = i;
-                    col = j;
+                if (entityFrom.type == RoomConfiguration.TileType.Player)
+                {
+                    if (winCoordinates == new Vector2Int(row, col))
+                    {
+                        roomCompleted?.Invoke();
+                    }
                 }
 
                 appMatrix[row, col] = entityFrom;

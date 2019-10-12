@@ -16,6 +16,7 @@ namespace Assets.Scripts.Ui
             this.cardsManager = FindObjectOfType<CardsManager>();
         }
 
+        public bool isEnabled;
         void Update()
         {
             Vector3 mousePosition = Input.mousePosition;
@@ -24,18 +25,22 @@ namespace Assets.Scripts.Ui
             mouseWorldPosition.z = 0;
             card?.OnMouseMove(mouseWorldPosition);
 
-            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-            if (Physics.Raycast(ray, 20f, LayerMask.GetMask("CardManager")))
+            if(isEnabled)
             {
-                cardsManager.OnMouseHover(mousePosition);
-            }
 
-            if (Input.GetMouseButtonDown(0))
-            {
-                if (Physics.Raycast(ray, out RaycastHit hit, 20f, LayerMask.GetMask("Card")))
+                Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+                if (Physics.Raycast(ray, 20f, LayerMask.GetMask("CardManager")))
                 {
-                    card = hit.transform.GetComponent<CardMovement>();
-                    StartCoroutine(card.DelayedCardMovement(mouseWorldPosition));
+                    cardsManager.OnMouseHover(mousePosition);
+                }
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    if (Physics.Raycast(ray, out RaycastHit hit, 20f, LayerMask.GetMask("Card")))
+                    {
+                        card = hit.transform.GetComponent<CardMovement>();
+                        StartCoroutine(card.DelayedCardMovement(mouseWorldPosition));
+                    }
                 }
             }
 

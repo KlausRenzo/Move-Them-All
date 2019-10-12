@@ -32,10 +32,12 @@ public class CardsManager : MonoBehaviour
     // Start is called before the first frame update
     public void Initialize(Card[] cardList)
     {
+        Cleanup();
         for (var i = 0; i < cardList.Length; i++)
         {
             var cardConfiguration = cardConfigurations.Find(x => x.card.type == cardList[i].type);
             CardMovement cardMovement = Instantiate(cardPrefab).GetComponent<CardMovement>();
+            cardMovement.transform.SetParent(this.transform);
             cardMovement.Initialize(cardConfiguration);
             cardMovement.sprite.sortingOrder = -(cards.Count + Math.Abs(i - 5));
             cards.Add(cardMovement);
@@ -46,6 +48,16 @@ public class CardsManager : MonoBehaviour
         collider = this.GetComponent<BoxCollider>();
 
         PositionCards();
+    }
+
+    private void Cleanup()
+    {
+        foreach (Transform child in this.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        cards.Clear();
+
     }
 
     private void CardMovementOnPlayed(CardMovement card)

@@ -9,9 +9,9 @@ public class RoomConfiguration : SerializedScriptableObject
 {
     public int roomNumber;
 
-    [TableMatrix(HorizontalTitle = "X axis")]
-    public TileType[,] entities;
-    
+
+    public TileType[][] entities;
+
     public Card[] cards;
 
     public enum TileType
