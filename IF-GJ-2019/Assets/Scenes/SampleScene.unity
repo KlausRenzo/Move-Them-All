@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 67262383}
   - component: {fileID: 67262382}
   - component: {fileID: 67262384}
+  - component: {fileID: 67262385}
   m_Layer: 8
   m_Name: PlayArea
   m_TagString: Untagged
@@ -181,6 +182,18 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &67262385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 67262381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e26c014910e4cd6458dec0b484faeb00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &131933223
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,7 +310,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.2784314, g: 0.2784314, b: 0.2784314, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -354,6 +367,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1136952589}
   - component: {fileID: 1136952588}
+  - component: {fileID: 1136952590}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -374,7 +388,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rooms:
-  - {fileID: 11400000, guid: 303c951a42c0fce4fa78e475daf422c7, type: 2}
+  - {fileID: 11400000, guid: 174dd8b9f6ce99f47b6e211ef4548723, type: 2}
+  wallPrefab: {fileID: 7184911197723442794, guid: ae7a8c7b5614a7841b89dff475fa08a6,
+    type: 3}
+  playerPrefab: {fileID: 889887490349409016, guid: 7fbeed5a9df3d0f4c8a6b1de41f2e24f,
+    type: 3}
+  enemyPrefab: {fileID: 5512445004947686942, guid: c347b03af90bce746bd3542e798b407e,
+    type: 3}
+  cardManager: {fileID: 1356137147}
 --- !u!4 &1136952589
 Transform:
   m_ObjectHideFlags: 0
@@ -383,12 +404,24 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1136952587}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.33977357, y: -0.02750725, z: -15177.916}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!156049354 &1136952590
+Grid:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136952587}
+  m_Enabled: 1
+  m_CellSize: {x: 1, y: 1, z: 1}
+  m_CellGap: {x: 0, y: 0, z: 0}
+  m_CellLayout: 0
+  m_CellSwizzle: 0
 --- !u!1 &1356137146
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,6 +454,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cardPrefab: {fileID: 6821973261292646164, guid: 08cd4c3bbe3c7e84e8e3ca3665a362a2,
     type: 3}
+  cardConfigurations:
+  - {fileID: 11400000, guid: 915c4f1173aa2ec438979715b7b6a38d, type: 2}
+  - {fileID: 11400000, guid: da9f7de1b481a13478d02f34942baa74, type: 2}
+  - {fileID: 11400000, guid: a860ffbbaa01e5743b93d724ba36e966, type: 2}
+  - {fileID: 11400000, guid: 4a21304fb59987c498226ca78c922d25, type: 2}
+  gridManager: {fileID: 0}
 --- !u!65 &1356137148
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Assets.Scripts.Ui;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,19 +13,37 @@ public class CardsManager : MonoBehaviour
     private BoxCollider collider;
 
     public GameObject cardPrefab;
+    [SerializeField] private List<CardConfiguration> cardConfigurations = new List<CardConfiguration>();
+    [SerializeField] private GridManager gridManager;
+
+    [Button(Name = "Get Cards")]
+    private void GetAllCards()
+    {
+        cardConfigurations = Utilities.GetAllInstances<CardConfiguration>().ToList();
+    }
+
+    private void Start()
+    {
+        gridManager = FindObjectOfType<GridManager>();
+
+        //todo Event
+    }
 
     // Start is called before the first frame update
-    void Start()
+    public void Initialize(Card[] cardList)
     {
-        collider = this.GetComponent<BoxCollider>();
-        for (int i = 0; i < 10; i++)
+        for (var i = 0; i < cardList.Length; i++)
         {
-            var cardMovement = Instantiate(cardPrefab).GetComponent<CardMovement>();
-            cardMovement.sprite.color = new Color(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
-            cardMovement.sprite.sortingOrder = cards.Count - Math.Abs(i - 5);
+            var cardConfiguration = cardConfigurations.Find(x => x.card.type == cardList[i].type);
+            CardMovement cardMovement = Instantiate(cardPrefab).GetComponent<CardMovement>();
+            cardMovement.Initialize(cardConfiguration);
+            cardMovement.sprite.sortingOrder = -(cards.Count + Math.Abs(i - 5));
             cards.Add(cardMovement);
             cardMovement.Played += CardMovementOnPlayed;
         }
+
+
+        collider = this.GetComponent<BoxCollider>();
 
         PositionCards();
     }
@@ -31,6 +52,7 @@ public class CardsManager : MonoBehaviour
     {
         cards.Remove(card);
         PositionCards();
+        gridManager.ExecuteCard(card.configuration.card.type);
     }
 
     private void PositionCards()
@@ -53,9 +75,10 @@ public class CardsManager : MonoBehaviour
     public void OnMouseHover(Vector3 mouseWorldPosition)
     {
         Ray ray = Camera.main.ScreenPointToRay(mouseWorldPosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, 20f, LayerMask.GetMask("Card")))
+        RaycastHit[] hits = Physics.RaycastAll(ray, 20, LayerMask.GetMask("Card"));
+        if (hits.Length > 0)
         {
-            var card = hit.transform.GetComponent<CardMovement>();
+            var card = hits.OrderBy(x => x.transform.GetComponent<CardMovement>().sprite.sortingOrder).Last().transform.GetComponent<CardMovement>();
 
             int index = cards.FindIndex(x => x == card);
             for (int i = 0; i < cards.Count; i++)

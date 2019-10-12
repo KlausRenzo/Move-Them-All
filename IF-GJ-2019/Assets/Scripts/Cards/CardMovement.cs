@@ -20,6 +20,8 @@ public class CardMovement : MonoBehaviour
     private bool selected;
     private BoxCollider collider;
 
+    public CardConfiguration configuration;
+
     public event Action<CardMovement> Played;
     public bool Selected
     {
@@ -29,7 +31,7 @@ public class CardMovement : MonoBehaviour
             if (selected != value)
             {
                 selected = value;
-                this.transform.position = value ? position + Vector3.up/10 : position;
+                this.transform.position = value ? position + new Vector3(0,1,-2) / 10 : position;
             }
         }
     }
@@ -38,6 +40,12 @@ public class CardMovement : MonoBehaviour
     {
         sprite = this.GetComponent<SpriteRenderer>();
         collider = this.GetComponent<BoxCollider>();
+    }
+
+    public void Initialize(CardConfiguration configuration)
+    {
+        this.configuration = configuration;
+        this.sprite.sprite = configuration.sprite;
     }
 
     void Update()
@@ -68,7 +76,7 @@ public class CardMovement : MonoBehaviour
             Destroy(this.gameObject);
             yield break;
         }
-        
+
         inertia = false;
 
         while (distanceDelta >= 0.01)
@@ -95,18 +103,16 @@ public class CardMovement : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-        this.goingToBePlayed = other.gameObject.name == "PlayArea";
+        this.goingToBePlayed = other.gameObject.GetComponent<PlayArea>() != null;
     }
 
     public void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.name == "PlayArea")
+        if (other.gameObject.GetComponent<PlayArea>() != null)
         {
             this.goingToBePlayed = false;
         }
-       
     }
-
 
     private bool goingToBePlayed;
 }
