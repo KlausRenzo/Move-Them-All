@@ -9,8 +9,12 @@ namespace Assets.Scripts.Ui
     {
         [SerializeField] private Vector3 mouseWorldPosition;
         private CardMovement card;
+        private CardsManager cardsManager;
 
-
+        void Start()
+        {
+            this.cardsManager = FindObjectOfType<CardsManager>();
+        }
 
         void Update()
         {
@@ -20,17 +24,22 @@ namespace Assets.Scripts.Ui
             mouseWorldPosition.z = 0;
             card?.OnMouseMove(mouseWorldPosition);
 
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+            if (Physics.Raycast(ray, 20f, LayerMask.GetMask("CardManager")))
+            {
+                cardsManager.OnMouseHover(mousePosition);
+            }
+
             if (Input.GetMouseButtonDown(0))
             {
-                Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
+                if (Physics.Raycast(ray, out RaycastHit hit, 20f, LayerMask.GetMask("Card")))
                 {
                     card = hit.transform.GetComponent<CardMovement>();
                     StartCoroutine(card.DelayedCardMovement(mouseWorldPosition));
                 }
             }
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0) && card != null)
             {
                 card.inertia = true;
                 card = null;

@@ -1,17 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "InternetFestival/Room")]
-public class RoomConfiguration : ScriptableObject
+[CreateAssetMenu(menuName = "Internet Festival/Room")]
+public class RoomConfiguration : SerializedScriptableObject
 {
-    public int roomX;
-    public int roomY;
+    public int roomNumber;
 
-    public RoomTile[,] matrix;
+    [TableMatrix(HorizontalTitle = "X axis")]
+    public TileType[,] EnumTable = new TileType[4, 4];
     
     public Card[] cards;
 
+    public enum TileType
+    {
+        Empty,
+        Enemy,
+        Wall,
+        Player
+    }
 }
 
 [System.Serializable]
@@ -19,9 +28,6 @@ public class RoomTile
 {
     public int x;
     public int y;
-
-
-
 }
 
 [System.Serializable]
