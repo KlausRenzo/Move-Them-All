@@ -27,16 +27,15 @@ namespace Assets.Scripts.Ui
 
             if(isEnabled)
             {
-
                 Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-                if (Physics.Raycast(ray, 20f, LayerMask.GetMask("CardManager")))
+                if (Physics.Raycast(ray, 50f, LayerMask.GetMask("CardManager")))
                 {
                     cardsManager.OnMouseHover(mousePosition);
                 }
 
                 if (Input.GetMouseButtonDown(0))
                 {
-                    if (Physics.Raycast(ray, out RaycastHit hit, 20f, LayerMask.GetMask("Card")))
+                    if (Physics.Raycast(ray, out RaycastHit hit, 50f, LayerMask.GetMask("Card")))
                     {
                         card = hit.transform.GetComponent<CardMovement>();
                         StartCoroutine(card.DelayedCardMovement(mouseWorldPosition));

@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour
         StartCoroutine(LevelTransition());
     }
 
-    [Button]
     private void LoadRoom()
     {
         gridManager.Initialize(rooms[roomNumber]);

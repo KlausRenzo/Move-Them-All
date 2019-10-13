@@ -326,6 +326,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9169447445753382852, guid: ec0ef477a0bcd66448bb328db9cc5be9,
+        type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9169447445753382852, guid: ec0ef477a0bcd66448bb328db9cc5be9,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9169447445753382852, guid: ec0ef477a0bcd66448bb328db9cc5be9,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1.2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ec0ef477a0bcd66448bb328db9cc5be9, type: 3}
 --- !u!1 &800323574
@@ -360,6 +375,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mouseWorldPosition: {x: 0, y: 0, z: 0}
+  isEnabled: 0
 --- !u!81 &800323576
 AudioListener:
   m_ObjectHideFlags: 0
@@ -732,12 +748,12 @@ PrefabInstance:
     - target: {fileID: 8479348240515448280, guid: 7fbeed5a9df3d0f4c8a6b1de41f2e24f,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.68
+      value: 1.64
       objectReference: {fileID: 0}
     - target: {fileID: 8479348240515448280, guid: 7fbeed5a9df3d0f4c8a6b1de41f2e24f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.36
+      value: 3.09
       objectReference: {fileID: 0}
     - target: {fileID: 8479348240515448280, guid: 7fbeed5a9df3d0f4c8a6b1de41f2e24f,
         type: 3}

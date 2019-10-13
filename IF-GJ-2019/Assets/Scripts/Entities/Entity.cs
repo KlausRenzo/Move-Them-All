@@ -8,9 +8,11 @@ namespace Entities
     {
         public RoomConfiguration.TileType type;
         private Animator animator;
+        public int hp;
 
         private void Start()
         {
+            hp = type == RoomConfiguration.TileType.Ogre ? 2 : 1;
             animator = this.GetComponent<Animator>();
         }
 

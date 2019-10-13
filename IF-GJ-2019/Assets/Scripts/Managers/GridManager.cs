@@ -69,7 +69,7 @@ public class GridManager : MonoBehaviour
         var x = room.entities.Length;
         var y = room.entities[0].Length;
 
-        multiplier = 5f / x;
+        multiplier = 5f / Mathf.Max(x, y);
         grid.cellSize = Vector3.one * multiplier;
 
         matrix = new Entity[x, y];
@@ -220,6 +220,14 @@ public class GridManager : MonoBehaviour
         var x = matrix.GetLength(0);
         var y = matrix.GetLength(1);
 
+        var row = i + direction.x;
+        var col = j - direction.y;
+
+        row = Mathf.Clamp(row, 0, x - 1);
+        col = Mathf.Clamp(col, 0, y - 1);
+
+        Entity entityTo = appMatrix[row, col];
+
         Entity entityFrom = matrix[i, j];
         if (entityFrom == null)
             return;
@@ -230,22 +238,76 @@ public class GridManager : MonoBehaviour
             case RoomConfiguration.TileType.Empty:
             case RoomConfiguration.TileType.Fire:
                 appMatrix[i, j] = entityFrom;
-                break;
+                return;
+
             case RoomConfiguration.TileType.Enemy:
+                if (entityTo == null)
+                {
+                    break;
+                }
+
+                if (entityTo.type == RoomConfiguration.TileType.Player)
+                {
+                    roomFailed?.Invoke();
+                }
+                else
+                {
+                    row = i;
+                    col = j;
+                }
+
+                break;
+
+
             case RoomConfiguration.TileType.Player:
+                if (winCoordinates == new Vector2Int(row, col))
+                {
+                    roomCompleted?.Invoke();
+                }
+                if (entityTo == null)
+                    break;
+                switch (entityTo.type)
+                {
+                    case RoomConfiguration.TileType.Ogre:
+                    case RoomConfiguration.TileType.Enemy:
+                    case RoomConfiguration.TileType.Fire:
+                        roomFailed?.Invoke();
+                        break;
+                    default:
+                        row = i;
+                        col = j; 
+                        break;
+                }
+
+               
+
+                break;
+
             case RoomConfiguration.TileType.Ogre:
-                var row = i + direction.x;
-                var col = j - direction.y;
+                if (entityTo == null)
+                    break;
 
-                row = Mathf.Clamp(row, 0, x - 1);
-                col = Mathf.Clamp(col, 0, y - 1);
+                if (entityTo.type == RoomConfiguration.TileType.Fire)
+                {
+                    //DAMAGE
+                    entityFrom.hp--;
+                    if (entityFrom.hp <= 0)
+                    {
+                        roomCompleted?.Invoke();
+                    }
 
-                Entity entityTo = appMatrix[row, col];
+                    Destroy(entityTo.gameObject);
+                    appMatrix[row, col] = null;
+                }
+
+                break;
+
+
                 if (entityTo != null)
                 {
                     switch (entityFrom.type)
                     {
-                        case RoomConfiguration.TileType.Ogre:
+                        case RoomConfiguration.TileType.Fire:
                             if (entityTo.type == RoomConfiguration.TileType.Fire)
                             {
                                 //DAMAGE
@@ -273,6 +335,9 @@ public class GridManager : MonoBehaviour
 
                             break;
                     }
+
+                    row = i;
+                    col = j;
                 }
 
                 if (entityFrom.type == RoomConfiguration.TileType.Player)
@@ -295,5 +360,13 @@ public class GridManager : MonoBehaviour
             default:
                 throw new ArgumentOutOfRangeException();
         }
+
+        appMatrix[row, col] = entityFrom;
+
+        if (row == i && col == j)
+            return;
+
+        // todo do movement on entity to manage animations
+        entityFrom.MoveTo(grid.GetCellCenterWorld(new Vector3Int(row - x / 2, (col - y / 2) * -1, 0)), direction);
     }
 }

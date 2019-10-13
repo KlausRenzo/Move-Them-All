@@ -87,7 +87,7 @@ public class CardsManager : MonoBehaviour
     public void OnMouseHover(Vector3 mouseWorldPosition)
     {
         Ray ray = Camera.main.ScreenPointToRay(mouseWorldPosition);
-        RaycastHit[] hits = Physics.RaycastAll(ray, 20, LayerMask.GetMask("Card"));
+        RaycastHit[] hits = Physics.RaycastAll(ray, 50, LayerMask.GetMask("Card"));
         if (hits.Length > 0)
         {
             var card = hits.OrderBy(x => x.transform.GetComponent<CardMovement>().sprite.sortingOrder).Last().transform.GetComponent<CardMovement>();
