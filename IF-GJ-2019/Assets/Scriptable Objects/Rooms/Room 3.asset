@@ -38,13 +38,13 @@ MonoBehaviour:
       Data: 0
     - Name: 
       Entry: 3
-      Data: 0
-    - Name: 
-      Entry: 3
       Data: 1
     - Name: 
       Entry: 3
       Data: 3
+    - Name: 
+      Entry: 3
+      Data: 0
     - Name: 
       Entry: 13
       Data: 
@@ -59,10 +59,10 @@ MonoBehaviour:
       Data: 4
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 2
     - Name: 
       Entry: 3
-      Data: 2
+      Data: 0
     - Name: 
       Entry: 3
       Data: 0
@@ -83,10 +83,10 @@ MonoBehaviour:
       Data: 4
     - Name: 
       Entry: 3
-      Data: 0
+      Data: 4
     - Name: 
       Entry: 3
-      Data: 4
+      Data: 0
     - Name: 
       Entry: 3
       Data: 0
@@ -129,7 +129,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  roomNumber: 1
+  roomNumber: 3
   cards:
   - type: 3
   - type: 3

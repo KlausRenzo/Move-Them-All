@@ -23,6 +23,13 @@ public class GridManager : MonoBehaviour
 
     [Space(10)] [SerializeField] private CardsManager cardManager;
 
+    [Space(10)] [SerializeField] private AudioClip ogreDeath;
+    [SerializeField] private AudioClip ogre;
+    [SerializeField] private AudioClip player1;
+    [SerializeField] private AudioClip player2;
+    [SerializeField] private AudioClip slime;
+    [SerializeField] private AudioClip slimeDeath;
+
     [TableMatrix] public Entity[,] matrix;
 
     public event Action roomFailed;
@@ -38,7 +45,7 @@ public class GridManager : MonoBehaviour
     }
 
     [Button]
-    private void Lose()
+    public void Lose()
     {
         roomFailed?.Invoke();
     }
@@ -248,12 +255,14 @@ public class GridManager : MonoBehaviour
 
                 if (entityTo.type == RoomConfiguration.TileType.Player)
                 {
+                    PlayAudio(slimeDeath);
                     roomFailed?.Invoke();
                 }
                 else
                 {
                     row = i;
                     col = j;
+                    PlayAudio(slime);
                 }
 
                 break;
@@ -264,22 +273,31 @@ public class GridManager : MonoBehaviour
                 {
                     roomCompleted?.Invoke();
                 }
+
+                PlayAudio(player1);
                 if (entityTo == null)
                     break;
+
                 switch (entityTo.type)
                 {
                     case RoomConfiguration.TileType.Ogre:
+                        PlayAudio(ogreDeath);
+                        roomFailed?.Invoke();
+                        break;
                     case RoomConfiguration.TileType.Enemy:
+                        PlayAudio(slimeDeath);
+                        roomFailed?.Invoke();
+                        break;
                     case RoomConfiguration.TileType.Fire:
                         roomFailed?.Invoke();
                         break;
                     default:
                         row = i;
-                        col = j; 
+                        col = j;
+
                         break;
                 }
 
-               
 
                 break;
 
@@ -289,6 +307,7 @@ public class GridManager : MonoBehaviour
 
                 if (entityTo.type == RoomConfiguration.TileType.Fire)
                 {
+                    PlayAudio(ogreDeath);
                     //DAMAGE
                     entityFrom.hp--;
                     if (entityFrom.hp <= 0)
@@ -368,5 +387,12 @@ public class GridManager : MonoBehaviour
 
         // todo do movement on entity to manage animations
         entityFrom.MoveTo(grid.GetCellCenterWorld(new Vector3Int(row - x / 2, (col - y / 2) * -1, 0)), direction);
+    }
+
+    private void PlayAudio(AudioClip clip)
+    {
+        AudioSource s = this.gameObject.AddComponent<AudioSource>();
+        s.PlayOneShot(clip);
+        Destroy(s, clip.length);
     }
 }

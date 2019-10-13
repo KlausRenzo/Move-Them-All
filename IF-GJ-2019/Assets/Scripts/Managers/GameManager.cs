@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Assets.Scripts.Ui;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -12,6 +13,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] private List<RoomConfiguration> rooms = new List<RoomConfiguration>();
     [SerializeField] private GridManager gridManager;
     [SerializeField] private UiManager uiManager;
+    [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private Animator uiAnimator;
+
 
     [Button(Name = "Get Rooms")]
     private void GetAllRooms()
@@ -32,6 +36,7 @@ public class GameManager : MonoBehaviour
 
     private void LoadRoom()
     {
+        text.text = $"LIVELLO {rooms[roomNumber].roomNumber}";
         gridManager.Initialize(rooms[roomNumber]);
         uiManager.isEnabled = true;
     }
@@ -54,8 +59,12 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator LevelTransition()
     {
+        uiAnimator.gameObject.SetActive(true);
+        uiAnimator.SetTrigger("Animation");
         uiManager.isEnabled = false;
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(.8f);
         LoadRoom();
+        yield return new WaitForSeconds(.8f);
+        uiAnimator.gameObject.SetActive(false);
     }
 }

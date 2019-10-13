@@ -16,6 +16,8 @@ public class CardsManager : MonoBehaviour
     [SerializeField] private List<CardConfiguration> cardConfigurations = new List<CardConfiguration>();
     [SerializeField] private GridManager gridManager;
 
+
+
     [Button(Name = "Get Cards")]
     private void GetAllCards()
     {

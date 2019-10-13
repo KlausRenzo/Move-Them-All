@@ -10,6 +10,7 @@ namespace Assets.Scripts.Ui
         [SerializeField] private Vector3 mouseWorldPosition;
         private CardMovement card;
         private CardsManager cardsManager;
+        [SerializeField] private AudioSource audioSurce;
 
         void Start()
         {
@@ -17,6 +18,7 @@ namespace Assets.Scripts.Ui
         }
 
         public bool isEnabled;
+
         void Update()
         {
             Vector3 mousePosition = Input.mousePosition;
@@ -25,7 +27,7 @@ namespace Assets.Scripts.Ui
             mouseWorldPosition.z = 0;
             card?.OnMouseMove(mouseWorldPosition);
 
-            if(isEnabled)
+            if (isEnabled)
             {
                 Ray ray = Camera.main.ScreenPointToRay(mousePosition);
                 if (Physics.Raycast(ray, 50f, LayerMask.GetMask("CardManager")))
@@ -38,7 +40,11 @@ namespace Assets.Scripts.Ui
                     if (Physics.Raycast(ray, out RaycastHit hit, 50f, LayerMask.GetMask("Card")))
                     {
                         card = hit.transform.GetComponent<CardMovement>();
-                        StartCoroutine(card.DelayedCardMovement(mouseWorldPosition));
+                        if (card != null)
+                        {
+                            audioSurce.Play();
+                            StartCoroutine(card.DelayedCardMovement(mouseWorldPosition));
+                        }
                     }
                 }
             }

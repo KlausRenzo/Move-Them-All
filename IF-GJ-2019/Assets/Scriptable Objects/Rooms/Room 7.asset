@@ -129,7 +129,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  roomNumber: 1
+  roomNumber: 7
   cards:
   - type: 3
   - type: 0
