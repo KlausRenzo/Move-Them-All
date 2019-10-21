@@ -4,9 +4,7 @@ using System.Linq;
 using Assets.Scripts.Ui;
 using Sirenix.OdinInspector;
 using TMPro;
-using UnityEditor.Rendering;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,13 +14,13 @@ public class GameManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI text;
     [SerializeField] private Animator uiAnimator;
 
-
+#if UNITY_EDITOR
     [Button(Name = "Get Rooms")]
     private void GetAllRooms()
     {
         rooms = Utilities.GetAllInstances<RoomConfiguration>().ToList();
     }
-
+#endif
     private int roomNumber = 0;
 
     // Start is called before the first frame update

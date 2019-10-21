@@ -17,13 +17,13 @@ public class CardsManager : MonoBehaviour
     [SerializeField] private GridManager gridManager;
 
 
-
+#if UNITY_EDITOR
     [Button(Name = "Get Cards")]
     private void GetAllCards()
     {
         cardConfigurations = Utilities.GetAllInstances<CardConfiguration>().ToList();
     }
-
+#endif
     private void Start()
     {
         gridManager = FindObjectOfType<GridManager>();
